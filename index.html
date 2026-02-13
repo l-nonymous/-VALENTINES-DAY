@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Will You Be My Valentine? 💕</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;700&family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;700&family=Poppins:wght@300;400;600;700&family=Dancing+Script:wght@700&display=swap');
         
         * {
             margin: 0;
@@ -136,11 +136,14 @@
             flex-wrap: wrap;
         }
         .no-gifs img {
-            width: 300px; 
+            width: 210px; 
+            max-height: 350px; 
+            object-fit: contain;
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
+        /* Puzzle Styling */
         .puzzle-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -153,10 +156,45 @@
             padding: 6px;
         }
         .drop-zone { width: 100%; height: 100%; border: 2px dashed #ff69b4; position: relative; }
-        .puzzle-piece { width: 80px; height: 80px; background-size: 380px 285px; cursor: grab; }
-        .puzzle-complete { opacity: 0; position: absolute; width: 100%; height: 100%; background-size: 380px 285px; }
-        .puzzle-complete.show { opacity: 1; transition: 1s; }
+        .puzzle-piece { 
+            width: 80px; 
+            height: 80px; 
+            background-size: 380px 285px; 
+            cursor: grab; 
+            touch-action: none; 
+            position: relative;
+            z-index: 10;
+        }
+       .puzzle-complete { 
+    opacity: 0; 
+    position: absolute; 
+    width: 100%; 
+    height: 100%; 
+    background-size: 380px 285px; 
+}
 
+/* We added 'border: none' here so the dashed lines disappear when the piece is correct */
+.puzzle-complete.show { 
+    opacity: 1; 
+    transition: 0.8s; 
+    border: none; 
+}
+
+/* IMPORTANT: Add this transition to your existing .puzzle-grid style 
+   to allow it to "lift" and "scale" smoothly */
+.puzzle-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 6px;
+    width: 380px;
+    height: 285px;
+    background: #fff5fa;
+    border: 4px solid #ff69b4;
+    padding: 6px;
+    transition: all 1.2s ease-in-out; /* Add this line! */
+}
+        /* Final Page Layout */
         .final-container {
             position: relative;
             width: 100vw;
@@ -225,7 +263,6 @@
         }
         .cat-polaroid img { width: 100%; height: 100%; object-fit: cover; }
         
-        /* Fixed and Adjusted Positions */
         .cat-1 { top: 8vh; left: 8vw; --r: -12deg; }
         .cat-2 { top: 8vh; right: 8vw; --r: 12deg; }
         .cat-3 { bottom: 18vh; left: 4vw; --r: 8deg; }
@@ -233,9 +270,9 @@
         .cat-5 { top: 45vh; left: 5vw; --r: -15deg; }
         .cat-6 { top: 45vh; right: 5vw; --r: 15deg; }
         .cat-7 { top: 12vh; left: 18vw; --r: 5deg; } 
-        .cat-8 { top: 4vh; left: 35vw; --r: -7deg; } /* Moved up and toward center */
+        .cat-8 { top: 4vh; left: 35vw; --r: -7deg; } 
         .cat-9 { top: 4vh; right: 35vw; --r: 7deg; } 
-        .cat-10 { top: 12vh; right: 18vw; --r: 5deg; } /* Moved up and toward center */
+        .cat-10 { top: 12vh; right: 18vw; --r: 5deg; } 
         
         @keyframes sway {
             0%, 100% { transform: rotate(-1deg) translateY(0); }
@@ -254,14 +291,7 @@
             padding: 8px;
             text-decoration: none;
             z-index: 100;
-            animation: drift 7s ease-in-out infinite;
             cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .floating-song:hover {
-            transform: scale(1.05);
-            background: #fff0f5;
         }
 
         .floating-song img { width: 45px; height: 45px; border-radius: 5px; margin-right: 10px; }
@@ -269,65 +299,66 @@
         .song-txt b { color: #ff1493; display: block; }
         .play-icon { font-size: 1.2rem; color: #ff1493; margin-left: 5px; }
 
-        @keyframes drift {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(10px, 15px); }
-        }
-
-        .central-letter {
+       .central-letter {
             position: relative;
             z-index: 110;
             background: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 30px;
             width: 380px;
-            min-height: auto;
             max-height: 75vh;
             overflow-y: auto;
             box-shadow: 0 30px 60px rgba(255, 105, 180, 0.4);
             border: 2px solid #ff69b4;
             margin-top: 50px; 
             text-align: justify;
-            font-size: 0.95rem;
-            line-height: 1.4;
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
-        
-        .no-break {
-            white-space: nowrap;
-        }
-        
-        .central-letter::-webkit-scrollbar { width: 5px; }
-        .central-letter::-webkit-scrollbar-thumb { background: #ff69b4; border-radius: 10px; }
 
-        /* NEW CODE FOR FLOWER TOGGLE */
-        .flower-trigger {
-            display: block;
-            margin: 20px auto 0;
-            width: 60px;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        .flower-trigger:hover { transform: scale(1.1); }
+    .no-break {
+        white-space: nowrap;
+        display: inline-block;
+    }
         
-        #flower-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            cursor: pointer;
-            animation: fadeIn 0.5s ease;
-        }
-        #flower-overlay img {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 20px;
-            box-shadow: 0 0 50px rgba(255, 20, 147, 0.5);
+#flower-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(73, 71, 72, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.flower-wrapper { 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+#flower-overlay img { 
+    max-width: 85vw; 
+    max-height: 70vh; 
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(211, 142, 202, 0.812);
+}
+
+.flower-text {
+    color: rgb(255, 148, 218);
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(2rem, 8vw, 4rem);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    text-align: center;
+}
+
+        @media (max-width: 430px) {
+            .central-letter, .puzzle-grid { width: 90vw; }
+            .p-left, .p-right, .cat-polaroid, .floating-song { display: none; }
         }
     </style>
 </head>
@@ -336,7 +367,10 @@
     <audio id="main-song" src="the song.mp3"></audio>
 
     <div id="flower-overlay" onclick="toggleFlower(false)">
-        <img src="flower.jpg" alt="Flower for you">
+        <div class="flower-wrapper">
+            <img src="flower.jpg" alt="Flower for you">
+            <div class="flower-text">FOR YOU MY LOVE</div>
+        </div>
     </div>
 
     <div id="page1" class="page active">
@@ -389,7 +423,6 @@
 
     <div id="final-page" class="page">
         <div class="page-label">⋆. 𐙚 ˚⋆. 𐙚 ˚</div>
-
         <div class="cat-polaroid cat-1"><img src="cat1.jpg"></div>
         <div class="cat-polaroid cat-2"><img src="cat2.jpg"></div>
         <div class="cat-polaroid cat-3"><img src="cat3.jpg"></div>
@@ -407,13 +440,19 @@
                 <div class="pol-card" style="animation-delay: 1.5s;"><div class="tape"></div><img src="photo2.jpg"></div>
             </div>
 
+            <div class="final-container">
+            <div class="polaroid-side p-left">
+                <div class="pol-card" style="animation-delay: 0s;"><img src="photo1.jpg"></div>
+                <div class="pol-card" style="animation-delay: 1.5s;"><img src="photo2.jpg"></div>
+            </div>
+
             <div class="floating-song" style="right: calc(50% + 460px); top:25vh;" onclick="toggleAudio('audio1', this)">
                 <img src="song1.jpg"><div class="song-txt"><b>Tahanan</b>El Manu</div><span class="play-icon">▶️</span>
                 <audio id="audio1" class="spotify-track" src="tahanan.mp3"></audio>
             </div>
 
             <div class="floating-song" style="right: calc(50% + 460px); top:48vh; animation-delay: 0.5s;" onclick="toggleAudio('audio6', this)">
-                <img src="song2.jpg"><div class="song-txt"><b>Simoy</b>El Manu</div><span class="play-icon">▶️</span>
+                <img src="song2.jpg"><div class="song-txt"><b>Simoy</b>Rob Deniel</div><span class="play-icon">▶️</span>
                 <audio id="audio6" class="spotify-track" src="simoy.mp3"></audio>
             </div>
             
@@ -421,9 +460,10 @@
                 <img src="song6.jpg"><div class="song-txt"><b>Ikaw At Ako Pa Rin</b>TJ Monterde & KZ</div><span class="play-icon">▶️</span>
                 <audio id="audio2" class="spotify-track" src="ikaw at ako.mp3"></audio>
             </div>
-
             <div class="central-letter">
-                <h2 style="color:#ff1493; margin-bottom:10px; text-align: left;">To my dearest <span class="no-break">Nadnad💗</span></h2>
+                <h2 style="color:#ff1493; margin-bottom:10px; text-align: left; font-size: 1.1rem;">
+                    To my dearest <span class="no-break">Nadnad💗</span>
+                </h2>
                 <p>If I could, I would teleport to you right now just to wrap you in the longest hug and never let go… pero hanggang chat and calls lang muna tayo for now :(( Still, kahit malayo, my heart feels so close to you.</p>
                 <br>
                 <p>Being in an LDR isn’t always easy, but loving you? That’s the easiest thing I’ve ever done. Choosing you is never a question. It’s always you. No doubts. No second thoughts. Just you, every single time.</p>
@@ -432,14 +472,22 @@
                 <br>
                 <p>I love you in the quiet moments, in the loud laughs, in the random “I miss you” and "I love you", and in the dreams of finally closing this distance. I love you gently, deeply, and always.</p>
                 <br>
-                <p style="font-weight:bold; color:#ff1493; text-align: center;">I LOVE YOUUU PALAGI, BABY. <span class="no-break">MWAAAAA</span></p>
+                <p style="font-weight:bold; color:#ff1493; text-align: center;">
+                    I LOVE YOUUU PALAGI, <span class="no-break">BABY. MWAAAAA</span>
+                </p>
                 <br>
-                <p style="font-weight:bold; text-align: center;">Will you be my Valentine… <span class="no-break">Forever? 💗</span></p>
+                <p style="font-weight:bold; text-align: center;">
+                    Will you be my <span class="no-break">Valentine… Forever? 💗</span>
+                </p>
                 <br>
-                <p style="text-align: center; color:#ff1493; font-weight: bold;">HAPPY VALENTINE'S DAY <span class="no-break">BABY!!💗💌</span></p>
-                <p style="margin-top:10px; text-align: right;">Love,<br><span style="color:#ff1493; font-weight: bold;">Weyang</span></p>
+                <p style="text-align: center; color:#ff1493; font-weight: bold;">
+                    HAPPY VALENTINE'S <span class="no-break">DAY BABY!!💗💌</span>
+                </p>
+                <p style="margin-top:10px; text-align: right;">
+                    Love,<br><span style="color:#ff1493; font-weight: bold;">Weyang</span>
+                </p>
                 
-                <img src="tap here.gif" class="flower-trigger" onclick="toggleFlower(true)">
+                <img src="tap here.gif" class="flower-trigger" onclick="toggleFlower(true)" style="width: 60px; display: block; margin: 15px auto; cursor: pointer;">
             </div>
 
             <div class="polaroid-side p-right">
@@ -447,7 +495,7 @@
                 <div class="pol-card" style="animation-delay: 2.2s;"><div class="tape"></div><img src="photo4.jpg"></div>
             </div>
 
-            <div class="floating-song" style="left: calc(50% + 460px); top:25vh;" onclick="toggleAudio('audio3', this)">
+          <div class="floating-song" style="left: calc(50% + 460px); top:25vh;" onclick="toggleAudio('audio3', this)">
                 <img src="song3.jpg"><div class="song-txt"><b>Libu-Libong Buwan</b>Kyle Raphael</div><span class="play-icon">▶️</span>
                 <audio id="audio3" class="spotify-track" src="libong buwan.mp3"></audio>
             </div>
@@ -466,48 +514,198 @@
     <script>
         const mainSong = document.getElementById('main-song');
 
-        /* NEW FLOWER TOGGLE SCRIPT */
-        function toggleFlower(show) {
-            const overlay = document.getElementById('flower-overlay');
-            overlay.style.display = show ? 'flex' : 'none';
-        }
-
-        function showPlaySongPage() {
-            mainSong.pause();
-            mainSong.currentTime = 0;
-            showPage('play-song-page');
-        }
-
-        function startExperience() {
-            mainSong.play();
-            showPage('code-page');
-        }
-
-        function toggleAudio(audioId, element) {
-            const audio = document.getElementById(audioId);
-            const icon = element.querySelector('.play-icon');
-            mainSong.pause();
-            document.querySelectorAll('.spotify-track').forEach(allAudio => {
-                if (allAudio.id !== audioId) {
-                    allAudio.pause();
-                    allAudio.parentElement.querySelector('.play-icon').innerHTML = '▶️';
+        function toggleAudio(id, el) {
+            const audio = document.getElementById(id);
+            const icon = el.querySelector('.play-icon');
+            
+            // First, pause any other Spotify-style tracks that might be playing
+            document.querySelectorAll('.spotify-track').forEach(track => {
+                if (track.id !== id) {
+                    track.pause();
+                    track.parentElement.querySelector('.play-icon').innerText = '▶️';
                 }
             });
+
             if (audio.paused) {
+                // STOP the background music when a specific song starts
+                mainSong.pause(); 
+                
                 audio.play();
-                icon.innerHTML = '⏸️';
+                icon.innerText = '⏸️';
             } else {
                 audio.pause();
-                icon.innerHTML = '▶️';
+                icon.innerText = '▶️';
+                
+                // OPTIONAL: Uncomment the line below if you want the background 
+                // music to resume automatically when you pause a song.
+                // mainSong.play(); 
             }
+        }
+        function toggleFlower(show) {
+            document.getElementById('flower-overlay').style.display = show ? 'flex' : 'none';
+        }
+
+        function showPlaySongPage() { showPage('play-song-page'); }
+        function startExperience() { mainSong.play(); showPage('code-page'); }
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+        function showPage1() { 
+    // Stop the main background song
+    mainSong.pause();
+    mainSong.currentTime = 0;
+
+    // Stop all floating songs
+    document.querySelectorAll('.spotify-track').forEach(track => {
+        track.pause();
+        track.currentTime = 0;
+        if(track.parentElement.querySelector('.play-icon')) {
+            track.parentElement.querySelector('.play-icon').innerText = '▶️';
+        }
+    });
+
+    // If puzzle was finished, we mark it so it auto-completes next time
+    // We check for 12 or if it's already been flagged
+    if (placedPieces === 12) {
+        placedPieces = "ALREADY_DONE"; 
+    }
+
+    showPage('page1'); 
+}
+
+function showNo() { showPage('no-page'); }
+
+function checkCode() {
+    if (document.getElementById('code-input').value === '122424') showPage('song-btn-page');
+    else alert('Hint: MM/DD/YY 👩‍❤️‍👩');
+}
+
+// UPDATE THIS FUNCTION:
+function showPuzzle() { 
+    if (placedPieces === "ALREADY_DONE") {
+        // If already completed once, skip the game and go to the letter
+        showPage('final-page');
+    } else {
+        // If it's the first time or not finished, start the game
+        initPuzzle(); 
+        showPage('puzzle-page'); 
+    }
+}
+
+        let placedPieces = 0;
+        function initPuzzle() {
+            const grid = document.getElementById('puzzle-grid');
+            const piecesContainer = document.getElementById('pieces-container');
+            grid.innerHTML = ''; piecesContainer.innerHTML = '';
+            placedPieces = 0;
+
+            for (let i = 0; i < 12; i++) {
+                const dz = document.createElement('div');
+                dz.className = 'drop-zone'; dz.dataset.pos = i;
+                const comp = document.createElement('div');
+                comp.className = 'puzzle-complete'; 
+                comp.style.backgroundImage = 'url(photo.png)';
+                comp.style.backgroundPosition = `-${(i%4)*95}px -${Math.floor(i/4)*95}px`;
+                dz.appendChild(comp);
+                grid.appendChild(dz);
+            }
+
+            const positions = [...Array(12).keys()].sort(() => Math.random() - 0.5);
+            positions.forEach(pos => {
+                const p = document.createElement('div');
+                p.className = 'puzzle-piece'; p.dataset.pos = pos;
+                p.style.backgroundImage = 'url(photo.png)';
+                p.style.backgroundPosition = `-${(pos%4)*95}px -${Math.floor(pos/4)*95}px`;
+                
+                let startX, startY;
+                p.addEventListener('touchstart', dragStart, {passive: false});
+                p.addEventListener('mousedown', dragStart);
+
+                function dragStart(e) {
+                    e.preventDefault();
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                    const rect = p.getBoundingClientRect();
+                    startX = clientX - rect.left;
+                    startY = clientY - rect.top;
+                    p.style.position = 'fixed';
+                    p.style.zIndex = 1000;
+                    
+                    const moveHandler = (e) => {
+                        const mX = e.touches ? e.touches[0].clientX : e.clientX;
+                        const mY = e.touches ? e.touches[0].clientY : e.clientY;
+                        p.style.left = (mX - startX) + 'px';
+                        p.style.top = (mY - startY) + 'px';
+                    };
+                    
+                    const stopHandler = (e) => {
+                        window.removeEventListener('mousemove', moveHandler);
+                        window.removeEventListener('mouseup', stopHandler);
+                        window.removeEventListener('touchmove', moveHandler);
+                        window.removeEventListener('touchend', stopHandler);
+                        
+                        p.style.display = 'none';
+                        const endX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
+                        const endY = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+                        const elemBelow = document.elementFromPoint(endX, endY);
+                        p.style.display = 'block';
+                        
+                        const zone = elemBelow ? elemBelow.closest('.drop-zone') : null;
+                        if (zone && zone.dataset.pos == p.dataset.pos) {
+                            zone.appendChild(p);
+                            p.style.position = 'relative';
+                            p.style.left = '0'; p.style.top = '0';
+                            zone.querySelector('.puzzle-complete').classList.add('show');
+                            p.style.visibility = 'hidden';
+                            placedPieces++;
+                            if (placedPieces === 12) {
+    document.getElementById('puzzle-success').style.display = 'block';
+    
+    // 1. Remove the grid borders and gaps to make it one solid image
+    const grid = document.getElementById('puzzle-grid');
+    grid.style.gap = '0';
+    grid.style.border = 'none';
+    grid.style.background = 'transparent';
+    
+    // 2. Remove the dashed borders from the drop zones
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.style.border = 'none';
+    });
+
+    // 3. The "Taking it out of the box" effect (Scale and Lift)
+    setTimeout(() => {
+        grid.style.transform = 'scale(1.1) translateY(-20px)';
+        grid.style.boxShadow = '0 20px 40px rgba(255, 20, 147, 0.3)';
+    }, 100);
+
+    // 4. Wait for the animation to finish before going to the final page
+    setTimeout(() => {
+        grid.style.opacity = '0';
+        grid.style.transform = 'scale(1.2) translateY(-50px)';
+        setTimeout(() => showPage('final-page'), 800);
+    }, 2500); // 2.5 seconds to admire the finished photo
+}
+                        } else {
+                            p.style.position = 'relative';
+                            p.style.left = '0'; p.style.top = '0';
+                        }
+                    };
+
+                    window.addEventListener('mousemove', moveHandler);
+                    window.addEventListener('mouseup', stopHandler);
+                    window.addEventListener('touchmove', moveHandler, {passive: false});
+                    window.addEventListener('touchend', stopHandler);
+                }
+                piecesContainer.appendChild(p);
+            });
         }
 
         function createHearts() {
             const hearts = document.getElementById('hearts');
             setInterval(() => {
                 const heart = document.createElement('div');
-                heart.className = 'heart';
-                heart.innerHTML = '💗';
+                heart.className = 'heart'; heart.innerHTML = '💗';
                 heart.style.left = Math.random() * 100 + '%';
                 heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
                 hearts.appendChild(heart);
@@ -515,72 +713,6 @@
             }, 300);
         }
         createHearts();
-
-        function showPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-        function showNo() { showPage('no-page'); }
-        
-        function showPage1() { 
-            placedPieces = 0;
-            mainSong.pause();
-            mainSong.currentTime = 0;
-            document.querySelectorAll('audio').forEach(audio => {
-                audio.pause();
-                audio.currentTime = 0;
-            });
-            document.querySelectorAll('.play-icon').forEach(icon => {
-                icon.innerHTML = '▶️';
-            });
-            document.getElementById('puzzle-success').style.display = 'none';
-            showPage('page1'); 
-        }
-
-        function checkCode() {
-            if (document.getElementById('code-input').value === '122424') showPage('song-btn-page');
-            else alert('Hint: MM/DD/YY 👩‍❤️‍👩');
-        }
-        function showPuzzle() { initDragPuzzle(); showPage('puzzle-page'); }
-
-        let draggedPiece = null, placedPieces = 0;
-        function initDragPuzzle() {
-            const grid = document.getElementById('puzzle-grid');
-            const piecesContainer = document.getElementById('pieces-container');
-            grid.innerHTML = ''; piecesContainer.innerHTML = '';
-            for (let i = 0; i < 12; i++) {
-                const dz = document.createElement('div');
-                dz.className = 'drop-zone'; dz.dataset.pos = i;
-                const comp = document.createElement('div');
-                comp.className = 'puzzle-complete'; comp.style.backgroundImage = 'url(photo.png)';
-                comp.style.backgroundPosition = `-${(i%4)*95}px -${Math.floor(i/4)*95}px`;
-                dz.appendChild(comp);
-                dz.addEventListener('dragover', e => e.preventDefault());
-                dz.addEventListener('drop', handleDrop);
-                grid.appendChild(dz);
-            }
-            const positions = [...Array(12).keys()].sort(() => Math.random() - 0.5);
-            positions.forEach(pos => {
-                const p = document.createElement('div');
-                p.className = 'puzzle-piece'; p.draggable = true; p.dataset.pos = pos;
-                p.style.backgroundImage = 'url(photo.png)';
-                p.style.backgroundPosition = `-${(pos%4)*95}px -${Math.floor(pos/4)*95}px`;
-                p.addEventListener('dragstart', function() { draggedPiece = this; });
-                piecesContainer.appendChild(p);
-            });
-        }
-
-        function handleDrop(e) {
-            if (this.dataset.pos === draggedPiece.dataset.pos) {
-                this.appendChild(draggedPiece);
-                this.querySelector('.puzzle-complete').classList.add('show');
-                placedPieces++;
-                if (placedPieces === 12) {
-                    document.getElementById('puzzle-success').style.display = 'block';
-                    setTimeout(() => showPage('final-page'), 2000);
-                }
-            }
-        }
     </script>
 </body>
 </html>
