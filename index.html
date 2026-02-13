@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine? 💕</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;700&family=Poppins:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+       body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(-45deg, #FFF0F5, #FFD1DC, #FFF9FB, #FFE4E1);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: #ff69b4;
+            animation: floatHeart 6s linear infinite;
+        }
+
+        @keyframes floatHeart {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .page.active { display: flex; }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 7vw, 4rem);
+            color: #ff1493 !important;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 0.5rem;
+            box-shadow: 0 12px 25px rgba(255, 105, 180, 0.4);
+            transition: 0.3s;
+        }
+
+        .home-btn {
+            position: absolute;
+            bottom: 30px;
+            z-index: 150;
+            font-size: 0.9rem;
+            padding: 0.6rem 1.5rem;
+        }
+
+        input {
+            border: 3px solid #ff69b4;
+            padding: 1rem;
+            font-size: 1.2rem;
+            border-radius: 15px;
+            margin: 1rem;
+            width: 280px;
+            text-align: center;
+        }
+
+        .no-gifs {
+            display: flex;
+            gap: 15px;
+            margin: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .no-gifs img {
+            width: 300px; 
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .puzzle-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 6px;
+            width: 380px;
+            height: 285px;
+            background: #fff5fa;
+            border: 4px solid #ff69b4;
+            padding: 6px;
+        }
+        .drop-zone { width: 100%; height: 100%; border: 2px dashed #ff69b4; position: relative; }
+        .puzzle-piece { width: 80px; height: 80px; background-size: 380px 285px; cursor: grab; }
+        .puzzle-complete { opacity: 0; position: absolute; width: 100%; height: 100%; background-size: 380px 285px; }
+        .puzzle-complete.show { opacity: 1; transition: 1s; }
+
+        .final-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .page-label {
+            position: absolute;
+            top: 30px; 
+            width: 100%;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: #ff1493;
+            font-weight: 700;
+            z-index: 120;
+        }
+
+        .polaroid-side {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            z-index: 95;
+            top: 15vh; 
+        }
+        .p-left { right: calc(50% + 280px); }
+        .p-right { left: calc(50% + 280px); }
+
+        .pol-card {
+            position: relative;
+            width: 170px;
+            height: 260px; 
+            background: white;
+            padding: 10px 10px 35px 10px;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+            animation: sway 5s ease-in-out infinite;
+        }
+        
+        .tape {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-2deg);
+            width: 70px;
+            height: 25px;
+            background: rgba(255, 182, 193, 0.6);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .pol-card img { width: 100%; height: 100%; object-fit: cover; }
+
+        .cat-polaroid {
+            position: absolute;
+            width: 110px;
+            height: 140px;
+            background: white;
+            padding: 5px 5px 20px 5px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            z-index: 80;
+            transform: rotate(var(--r));
+        }
+        .cat-polaroid img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Fixed and Adjusted Positions */
+        .cat-1 { top: 8vh; left: 8vw; --r: -12deg; }
+        .cat-2 { top: 8vh; right: 8vw; --r: 12deg; }
+        .cat-3 { bottom: 18vh; left: 4vw; --r: 8deg; }
+        .cat-4 { bottom: 18vh; right: 4vw; --r: -10deg; }
+        .cat-5 { top: 45vh; left: 5vw; --r: -15deg; }
+        .cat-6 { top: 45vh; right: 5vw; --r: 15deg; }
+        .cat-7 { top: 12vh; left: 18vw; --r: 5deg; } 
+        .cat-8 { top: 4vh; left: 35vw; --r: -7deg; } /* Moved up and toward center */
+        .cat-9 { top: 4vh; right: 35vw; --r: 7deg; } 
+        .cat-10 { top: 12vh; right: 18vw; --r: 5deg; } /* Moved up and toward center */
+        
+        @keyframes sway {
+            0%, 100% { transform: rotate(-1deg) translateY(0); }
+            50% { transform: rotate(1deg) translateY(-8px); }
+        }
+
+        .floating-song {
+            position: absolute;
+            width: 200px;
+            height: 75px;
+            background: white;
+            border: 2px solid #ff69b4;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+            animation: drift 7s ease-in-out infinite;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .floating-song:hover {
+            transform: scale(1.05);
+            background: #fff0f5;
+        }
+
+        .floating-song img { width: 45px; height: 45px; border-radius: 5px; margin-right: 10px; }
+        .song-txt { font-size: 0.75rem; color: #333; text-align: left; flex-grow: 1; }
+        .song-txt b { color: #ff1493; display: block; }
+        .play-icon { font-size: 1.2rem; color: #ff1493; margin-left: 5px; }
+
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(10px, 15px); }
+        }
+
+        .central-letter {
+            position: relative;
+            z-index: 110;
+            background: white;
+            padding: 2rem;
+            border-radius: 30px;
+            width: 380px;
+            min-height: auto;
+            max-height: 75vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 60px rgba(255, 105, 180, 0.4);
+            border: 2px solid #ff69b4;
+            margin-top: 50px; 
+            text-align: justify;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        .no-break {
+            white-space: nowrap;
+        }
+        
+        .central-letter::-webkit-scrollbar { width: 5px; }
+        .central-letter::-webkit-scrollbar-thumb { background: #ff69b4; border-radius: 10px; }
+
+        /* NEW CODE FOR FLOWER TOGGLE */
+        .flower-trigger {
+            display: block;
+            margin: 20px auto 0;
+            width: 60px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .flower-trigger:hover { transform: scale(1.1); }
+        
+        #flower-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: pointer;
+            animation: fadeIn 0.5s ease;
+        }
+        #flower-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(255, 20, 147, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts"></div>
+    <audio id="main-song" src="the song.mp3"></audio>
+
+    <div id="flower-overlay" onclick="toggleFlower(false)">
+        <img src="flower.jpg" alt="Flower for you">
+    </div>
+
+    <div id="page1" class="page active">
+        <h1>Will you be my Valentine??? 💕</h1>
+        <div class="btn-group">
+            <button onclick="showPlaySongPage()">YES</button>
+            <button onclick="showNo()">NO</button>
+        </div>
+    </div>
+
+    <div id="play-song-page" class="page">
+        <h1>YAYYYY!!🥳🥳</h1>
+        <div class="no-gifs">
+            <img src="https://media.tenor.com/-qBsG1HwR4oAAAAM/cat-dance-dancing-cat.gif">
+            <img src="https://i.pinimg.com/originals/88/14/9b/88149b0400750578f4d07d9bc3fb0fee.gif">
+            <img src="https://media.tenor.com/2IlcKC-LI9YAAAAM/dancing-cat-cat.gif">
+        </div>
+        <h2 style="color: #ff1493; margin-bottom: 1rem; font-size: 3.3rem;">LET'S GO???</h2>
+        <button onclick="startExperience()">LET'S GOOO</button>
+    </div>
+
+    <div id="no-page" class="page">
+        <h1>Awww, but why? 🥺</h1>
+        <div class="no-gifs">
+            <img src="https://media.tenor.com/AQl5nwtdmKYAAAAM/sad-cat.gif">
+            <img src="https://gifdb.com/images/high/sad-cat-tampo-hugging-himself-85rculqbt4s0j9qd.gif">
+            <img src="https://media.tenor.com/-DY1sCSEXqUAAAAM/sad-cat.gif">
+        </div>
+        <button onclick="showPage1()">PLEASE SAY YESSS</button>
+    </div>
+
+    <div id="code-page" class="page">
+        <h1>Enter the code 👩‍❤️‍👩</h1>
+        <p style="color:#ff69b4">Hint: The date we became official.</p>
+        <input type="text" id="code-input" maxlength="6" placeholder="______">
+        <button onclick="checkCode()">PROCEED</button>
+    </div>
+
+    <div id="song-btn-page" class="page">
+        <h1>WOW SO GALING NAMAN, NOW LETS....</h1>
+        <button onclick="showPuzzle()">PLAY A PUZZLE!! 🧩</button>
+    </div>
+
+    <div id="puzzle-page" class="page">
+        <h1>Drag pieces into boxes! 🧩</h1>
+        <div class="puzzle-grid" id="puzzle-grid"></div>
+        <div class="pieces-container" id="pieces-container" style="display:flex; flex-wrap:wrap; margin-top:20px; gap:10px; justify-content:center;"></div>
+        <div id="puzzle-success" style="display:none; color:#000000; font-weight:bold; margin-top:10px;">YAYYY YOU DID IT BABYY!🎉👏👏</div>
+    </div>
+
+    <div id="final-page" class="page">
+        <div class="page-label">⋆. 𐙚 ˚⋆. 𐙚 ˚</div>
+
+        <div class="cat-polaroid cat-1"><img src="cat1.jpg"></div>
+        <div class="cat-polaroid cat-2"><img src="cat2.jpg"></div>
+        <div class="cat-polaroid cat-3"><img src="cat3.jpg"></div>
+        <div class="cat-polaroid cat-4"><img src="cat4.jpg"></div>
+        <div class="cat-polaroid cat-5"><img src="cat5.jpg"></div>
+        <div class="cat-polaroid cat-6"><img src="cat6.jpg"></div>
+        <div class="cat-polaroid cat-7"><img src="cat7.jpg"></div>
+        <div class="cat-polaroid cat-8"><img src="cat8.jpg"></div> 
+        <div class="cat-polaroid cat-9"><img src="cat9.jpg"></div> 
+        <div class="cat-polaroid cat-10"><img src="cat10.jpg"></div>
+
+        <div class="final-container">
+            <div class="polaroid-side p-left">
+                <div class="pol-card" style="animation-delay: 0s;"><div class="tape"></div><img src="photo1.jpg"></div>
+                <div class="pol-card" style="animation-delay: 1.5s;"><div class="tape"></div><img src="photo2.jpg"></div>
+            </div>
+
+            <div class="floating-song" style="right: calc(50% + 460px); top:25vh;" onclick="toggleAudio('audio1', this)">
+                <img src="song1.jpg"><div class="song-txt"><b>Tahanan</b>El Manu</div><span class="play-icon">▶️</span>
+                <audio id="audio1" class="spotify-track" src="tahanan.mp3"></audio>
+            </div>
+
+            <div class="floating-song" style="right: calc(50% + 460px); top:48vh; animation-delay: 0.5s;" onclick="toggleAudio('audio6', this)">
+                <img src="song2.jpg"><div class="song-txt"><b>Simoy</b>El Manu</div><span class="play-icon">▶️</span>
+                <audio id="audio6" class="spotify-track" src="simoy.mp3"></audio>
+            </div>
+            
+            <div class="floating-song" style="right: calc(50% + 460px); bottom:10vh; animation-delay: 1.5s;" onclick="toggleAudio('audio2', this)">
+                <img src="song6.jpg"><div class="song-txt"><b>Ikaw At Ako Pa Rin</b>TJ Monterde & KZ</div><span class="play-icon">▶️</span>
+                <audio id="audio2" class="spotify-track" src="ikaw at ako.mp3"></audio>
+            </div>
+
+            <div class="central-letter">
+                <h2 style="color:#ff1493; margin-bottom:10px; text-align: left;">To my dearest <span class="no-break">Nadnad💗</span></h2>
+                <p>If I could, I would teleport to you right now just to wrap you in the longest hug and never let go… pero hanggang chat and calls lang muna tayo for now :(( Still, kahit malayo, my heart feels so close to you.</p>
+                <br>
+                <p>Being in an LDR isn’t always easy, but loving you? That’s the easiest thing I’ve ever done. Choosing you is never a question. It’s always you. No doubts. No second thoughts. Just you, every single time.</p>
+                <br>
+                <p>This Valentine’s Day, I hope you remember that somewhere out here is a girl who smiles at her phone like crazy because of you. A girl who feels so lucky that out of all the people in this world, we found each other.</p>
+                <br>
+                <p>I love you in the quiet moments, in the loud laughs, in the random “I miss you” and "I love you", and in the dreams of finally closing this distance. I love you gently, deeply, and always.</p>
+                <br>
+                <p style="font-weight:bold; color:#ff1493; text-align: center;">I LOVE YOUUU PALAGI, BABY. <span class="no-break">MWAAAAA</span></p>
+                <br>
+                <p style="font-weight:bold; text-align: center;">Will you be my Valentine… <span class="no-break">Forever? 💗</span></p>
+                <br>
+                <p style="text-align: center; color:#ff1493; font-weight: bold;">HAPPY VALENTINE'S DAY <span class="no-break">BABY!!💗💌</span></p>
+                <p style="margin-top:10px; text-align: right;">Love,<br><span style="color:#ff1493; font-weight: bold;">Weyang</span></p>
+                
+                <img src="tap here.gif" class="flower-trigger" onclick="toggleFlower(true)">
+            </div>
+
+            <div class="polaroid-side p-right">
+                <div class="pol-card" style="animation-delay: 0.7s;"><div class="tape"></div><img src="photo3.jpg"></div>
+                <div class="pol-card" style="animation-delay: 2.2s;"><div class="tape"></div><img src="photo4.jpg"></div>
+            </div>
+
+            <div class="floating-song" style="left: calc(50% + 460px); top:25vh;" onclick="toggleAudio('audio3', this)">
+                <img src="song3.jpg"><div class="song-txt"><b>Libu-Libong Buwan</b>Kyle Raphael</div><span class="play-icon">▶️</span>
+                <audio id="audio3" class="spotify-track" src="libong buwan.mp3"></audio>
+            </div>
+            <div class="floating-song" style="left: calc(50% + 460px); top:52vh; animation-delay: 2s;" onclick="toggleAudio('audio4', this)">
+                <img src="song4.jpg"><div class="song-txt"><b>Museo</b>Eliza Maturan</div><span class="play-icon">▶️</span>
+                <audio id="audio4" class="spotify-track" src="museo.mp3"></audio>
+            </div>
+            <div class="floating-song" style="left: calc(50% + 460px); bottom:12vh; animation-delay: 0.8s;" onclick="toggleAudio('audio5', this)">
+                <img src="song5.jpg"><div class="song-txt"><b>Hindi Ako Mawawala</b>El Manu</div><span class="play-icon">▶️</span>
+                <audio id="audio5" class="spotify-track" src="hindi ako mawawala.mp3"></audio>
+            </div>
+        </div>
+        <button class="home-btn" onclick="showPage1()">Back to Home </button>
+    </div>
+
+    <script>
+        const mainSong = document.getElementById('main-song');
+
+        /* NEW FLOWER TOGGLE SCRIPT */
+        function toggleFlower(show) {
+            const overlay = document.getElementById('flower-overlay');
+            overlay.style.display = show ? 'flex' : 'none';
+        }
+
+        function showPlaySongPage() {
+            mainSong.pause();
+            mainSong.currentTime = 0;
+            showPage('play-song-page');
+        }
+
+        function startExperience() {
+            mainSong.play();
+            showPage('code-page');
+        }
+
+        function toggleAudio(audioId, element) {
+            const audio = document.getElementById(audioId);
+            const icon = element.querySelector('.play-icon');
+            mainSong.pause();
+            document.querySelectorAll('.spotify-track').forEach(allAudio => {
+                if (allAudio.id !== audioId) {
+                    allAudio.pause();
+                    allAudio.parentElement.querySelector('.play-icon').innerHTML = '▶️';
+                }
+            });
+            if (audio.paused) {
+                audio.play();
+                icon.innerHTML = '⏸️';
+            } else {
+                audio.pause();
+                icon.innerHTML = '▶️';
+            }
+        }
+
+        function createHearts() {
+            const hearts = document.getElementById('hearts');
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '💗';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                hearts.appendChild(heart);
+                setTimeout(() => heart.remove(), 6000);
+            }, 300);
+        }
+        createHearts();
+
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+        function showNo() { showPage('no-page'); }
+        
+        function showPage1() { 
+            placedPieces = 0;
+            mainSong.pause();
+            mainSong.currentTime = 0;
+            document.querySelectorAll('audio').forEach(audio => {
+                audio.pause();
+                audio.currentTime = 0;
+            });
+            document.querySelectorAll('.play-icon').forEach(icon => {
+                icon.innerHTML = '▶️';
+            });
+            document.getElementById('puzzle-success').style.display = 'none';
+            showPage('page1'); 
+        }
+
+        function checkCode() {
+            if (document.getElementById('code-input').value === '122424') showPage('song-btn-page');
+            else alert('Hint: MM/DD/YY 👩‍❤️‍👩');
+        }
+        function showPuzzle() { initDragPuzzle(); showPage('puzzle-page'); }
+
+        let draggedPiece = null, placedPieces = 0;
+        function initDragPuzzle() {
+            const grid = document.getElementById('puzzle-grid');
+            const piecesContainer = document.getElementById('pieces-container');
+            grid.innerHTML = ''; piecesContainer.innerHTML = '';
+            for (let i = 0; i < 12; i++) {
+                const dz = document.createElement('div');
+                dz.className = 'drop-zone'; dz.dataset.pos = i;
+                const comp = document.createElement('div');
+                comp.className = 'puzzle-complete'; comp.style.backgroundImage = 'url(photo.png)';
+                comp.style.backgroundPosition = `-${(i%4)*95}px -${Math.floor(i/4)*95}px`;
+                dz.appendChild(comp);
+                dz.addEventListener('dragover', e => e.preventDefault());
+                dz.addEventListener('drop', handleDrop);
+                grid.appendChild(dz);
+            }
+            const positions = [...Array(12).keys()].sort(() => Math.random() - 0.5);
+            positions.forEach(pos => {
+                const p = document.createElement('div');
+                p.className = 'puzzle-piece'; p.draggable = true; p.dataset.pos = pos;
+                p.style.backgroundImage = 'url(photo.png)';
+                p.style.backgroundPosition = `-${(pos%4)*95}px -${Math.floor(pos/4)*95}px`;
+                p.addEventListener('dragstart', function() { draggedPiece = this; });
+                piecesContainer.appendChild(p);
+            });
+        }
+
+        function handleDrop(e) {
+            if (this.dataset.pos === draggedPiece.dataset.pos) {
+                this.appendChild(draggedPiece);
+                this.querySelector('.puzzle-complete').classList.add('show');
+                placedPieces++;
+                if (placedPieces === 12) {
+                    document.getElementById('puzzle-success').style.display = 'block';
+                    setTimeout(() => showPage('final-page'), 2000);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
